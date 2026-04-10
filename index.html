@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -232,6 +233,9 @@ footer a:hover{text-decoration:underline}
   .svc-grid{grid-template-columns:1fr}
   .t-grid{grid-template-columns:1fr}
 }
+/* ── MAP ── */
+.map-section{background:#0a0a14}
+#map{width:100%;height:400px;display:block}
 </style>
 </head>
 <body>
@@ -354,9 +358,35 @@ footer a:hover{text-decoration:underline}
   </div>
 </section>
 
+<!-- MAP -->
+<section class="map-section">
+  <div id="map" aria-label="Map showing East Coast Roofing, Siding &amp; Windows in Mays Landing, NJ"></div>
+</section>
+
 <footer>
   <p>&copy; 2025 East Coast Roofing, Siding &amp; Windows &nbsp;&bull;&nbsp; Roofing in Mays Landing, NJ &nbsp;&bull;&nbsp; <a href="tel:8775354770">(877) 535-4770</a></p>
 </footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+(function(){
+  var geo='6090 Danenhauer Lane #10, Mays Landing, NJ';
+  if(!geo)return;
+  var q=encodeURIComponent(geo+', USA');
+  fetch('https://nominatim.openstreetmap.org/search?q='+q+'&format=json&limit=1')
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(!d||!d.length)return;
+      var lat=parseFloat(d[0].lat),lng=parseFloat(d[0].lon);
+      var map=L.map('map',{scrollWheelZoom:false}).setView([lat,lng],13);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+        attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        maxZoom:19
+      }).addTo(map);
+      L.marker([lat,lng]).addTo(map).bindPopup('East Coast Roofing, Siding &amp; Windows').openPopup();
+    }).catch(function(){});
+})();
+</script>
 
 </body>
 </html>
